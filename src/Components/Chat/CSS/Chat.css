@@ -1,0 +1,99 @@
+#chat {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  background-color: #212121;
+  position: absolute;
+  top: 56px;
+  right: 0;
+  width: 82%;
+  height: 100%;
+  transition: all 0.4s;
+  z-index: -3;
+}
+
+.chatBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 768px;
+  height: fit-content;
+  margin-top: 20px;
+}
+
+.promptBox {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  width: 100%;
+  height: fit-content;
+  margin-bottom: 3rem;
+}
+
+.promptBox:hover .promptEditLogoDiv {
+  visibility: visible;
+}
+
+.promptEditLogoDiv {
+  visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2rem;
+  width: 36px;
+  height: 36px;
+  margin-right: 1rem;
+  margin-top: 0.2rem;
+  cursor: pointer;
+}
+
+.promptEditLogoDiv:hover {
+  background: #424242;
+}
+
+.promptEditLogoDiv > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.promptContentDiv {
+  color: #ececec;
+  background-color: #323232d9;
+  border-radius: 1.5rem;
+  font-size: 16px;
+  white-space: pre-wrap;
+  max-width: 537px;
+  height: fit-content;
+  padding: 10px 20px;
+}
+
+.aiResponseBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  height: fit-content;
+}
+
+.chatgptLogoDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #424242;
+  border-radius: 2rem;
+  width: 32px;
+  height: 32px;
+}
+
+.chatgptLogoDiv > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.responseContentDiv {
+  color: #ececec;
+  width: 712px;
+  height: fit-content;
+}
