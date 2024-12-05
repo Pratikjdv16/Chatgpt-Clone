@@ -61,7 +61,10 @@ const Navbar = (props) => {
                 alignItems: "center",
               }}
             >
-              <div className="letNavItems" style={{ marginLeft: "0.7rem" }}>
+              <div
+                className="letNavItems rightNavItems"
+                style={{ marginLeft: "0.7rem" }}
+              >
                 <svg
                   width="24"
                   height="24"
@@ -80,7 +83,7 @@ const Navbar = (props) => {
                 </svg>
               </div>
 
-              <div className="letNavItems">
+              <div className="letNavItems rightNavItems">
                 <svg
                   width="24"
                   height="24"
@@ -100,7 +103,9 @@ const Navbar = (props) => {
             </div>
           )}
 
-          <img src={myPic} alt="Profile Pic" />
+          <div className="profileImgDiv">
+            <img src={myPic} alt="Profile Pic" />
+          </div>
         </div>
       </div>
 

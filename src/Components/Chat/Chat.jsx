@@ -25,7 +25,7 @@ const Chat = ({ state }) => {
           </div>
 
           <div className="promptContentDiv">
-            <span>
+            <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae
               ullam necessitatibus voluptas odit provident ratione enim
               aspernatur nam aliquid iusto atque a, sunt laudantium ipsam
@@ -34,39 +34,7 @@ const Chat = ({ state }) => {
               velit blanditiis voluptates doloremque deleniti aut, nisi sit.
               Nemo, quasi iure. Excepturi, quas dicta optio vel culpa earum
               repudiandae aut eos impedit.
-            </span>
-          </div>
-        </div>
-        <div className="promptBox">
-          <div className="promptEditLogoDiv">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="icon-md"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M13.2929 4.29291C15.0641 2.52167 17.9359 2.52167 19.7071 4.2929C21.4784 6.06414 21.4784 8.93588 19.7071 10.7071L18.7073 11.7069L11.6135 18.8007C10.8766 19.5376 9.92793 20.0258 8.89999 20.1971L4.16441 20.9864C3.84585 21.0395 3.52127 20.9355 3.29291 20.7071C3.06454 20.4788 2.96053 20.1542 3.01362 19.8356L3.80288 15.1C3.9742 14.0721 4.46243 13.1234 5.19932 12.3865L13.2929 4.29291ZM13 7.41422L6.61353 13.8007C6.1714 14.2428 5.87846 14.8121 5.77567 15.4288L5.21656 18.7835L8.57119 18.2244C9.18795 18.1216 9.75719 17.8286 10.1993 17.3865L16.5858 11L13 7.41422ZM18 9.5858L14.4142 6.00001L14.7071 5.70712C15.6973 4.71693 17.3027 4.71693 18.2929 5.70712C19.2831 6.69731 19.2831 8.30272 18.2929 9.29291L18 9.5858Z"
-                fill="white"
-              ></path>
-            </svg>
-          </div>
-
-          <div className="promptContentDiv">
-            <span>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae
-              ullam necessitatibus voluptas odit provident ratione enim
-              aspernatur nam aliquid iusto atque a, sunt laudantium ipsam
-              aliquam numquam sint. A sunt cum error quis! Alias nostrum, atque
-              dicta vero odit maiores est nihil accusamus assumenda commodi
-              velit blanditiis voluptates doloremque deleniti aut, nisi sit.
-              Nemo, quasi iure. Excepturi, quas dicta optio vel culpa earum
-              repudiandae aut eos impedit.
-            </span>
+            </p>
           </div>
         </div>
 
@@ -92,7 +60,7 @@ const Chat = ({ state }) => {
           </div>
 
           <div className="responseContentDiv">
-            <span>
+            <p>
               Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dicta
               magnam excepturi recusandae eligendi aliquid, dolore architecto et
               magni perspiciatis inventore unde natus quod voluptas
@@ -102,9 +70,58 @@ const Chat = ({ state }) => {
               laudantium eligendi excepturi eaque! Quos debitis dolores
               distinctio veritatis dignissimos maxime, doloremque dolorem vitae
               sint libero.
-            </span>
+            </p>
           </div>
         </div>
+      </div>
+
+      {/* Prompt Action */}
+      <div className="promptInputBox">
+        <div className="promptInputContentDiv">
+          <input type="text" placeholder="Message ChatGPT 16" />
+        </div>
+
+        <div className="promptActionButtonsDiv">
+          <button id="attachFilesButton">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M9 7C9 4.23858 11.2386 2 14 2C16.7614 2 19 4.23858 19 7V15C19 18.866 15.866 22 12 22C8.13401 22 5 18.866 5 15V9C5 8.44772 5.44772 8 6 8C6.55228 8 7 8.44772 7 9V15C7 17.7614 9.23858 20 12 20C14.7614 20 17 17.7614 17 15V7C17 5.34315 15.6569 4 14 4C12.3431 4 11 5.34315 11 7V15C11 15.5523 11.4477 16 12 16C12.5523 16 13 15.5523 13 15V9C13 8.44772 13.4477 8 14 8C14.5523 8 15 8.44772 15 9V15C15 16.6569 13.6569 18 12 18C10.3431 18 9 16.6569 9 15V7Z"
+                fill="white"
+              ></path>
+            </svg>
+          </button>
+
+          <button id="submitPromptButton">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="icon-2xl"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M15.1918 8.90615C15.6381 8.45983 16.3618 8.45983 16.8081 8.90615L21.9509 14.049C22.3972 14.4953 22.3972 15.2189 21.9509 15.6652C21.5046 16.1116 20.781 16.1116 20.3347 15.6652L17.1428 12.4734V22.2857C17.1428 22.9169 16.6311 23.4286 15.9999 23.4286C15.3688 23.4286 14.8571 22.9169 14.8571 22.2857V12.4734L11.6652 15.6652C11.2189 16.1116 10.4953 16.1116 10.049 15.6652C9.60265 15.2189 9.60265 14.4953 10.049 14.049L15.1918 8.90615Z"
+                fill="black"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="footer" style={{ width: state.mainWidth }}>
+        <span>ChatGPT 16 can make mistakes. Check important info.</span>
       </div>
     </section>
   );

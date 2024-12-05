@@ -33,6 +33,10 @@
   background: #212121;
 }
 
+.rightNavItems:hover {
+  background: #2f2f2f !important;
+}
+
 .rightNav {
   display: flex;
   justify-content: space-between;
@@ -61,9 +65,23 @@
   background: #2f2f2f;
 }
 
-.rightNav img {
+.profileImgDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: 1.6rem;
+  cursor: pointer;
+}
+
+.profileImgDiv:hover {
+  background-color: #2f2f2f;
+}
+
+.profileImgDiv img {
   border-radius: 1rem;
   width: 2rem;
   height: 2rem;
-  margin-right: 1.6rem;
 }
