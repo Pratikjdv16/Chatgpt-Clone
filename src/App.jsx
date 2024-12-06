@@ -9,13 +9,24 @@ const App = () => {
     status: "on",
     navWidth: "18%",
     chatWidth: "82%",
+    promptRight: "232px",
   });
 
   const onOff = () => {
     if (state.status === "on") {
-      setState({ status: "off", navWidth: "0%", chatWidth: "100%" });
+      setState({
+        status: "off",
+        navWidth: "0%",
+        chatWidth: "100%",
+        promptRight: "370px",
+      });
     } else {
-      setState({ status: "on", navWidth: "18%", chatWidth: "82%" });
+      setState({
+        status: "on",
+        navWidth: "18%",
+        chatWidth: "82%",
+        promptRight: "232px",
+      });
     }
     console.log("Clicked");
   };

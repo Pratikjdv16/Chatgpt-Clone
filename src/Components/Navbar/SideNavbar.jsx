@@ -158,16 +158,17 @@ const SideNavbar = ({ navWidth }) => {
             History
           </span>
 
-          {/* History Items */}
+          {/* History */}
           {historyData.map((value, index) => {
             return (
               <NavLink
                 key={index}
                 to={`/chatgpt16/${value.id}`}
                 style={
-                  renameData.id === value.id
+                  (hoverData.id === value.id || popupData.id === value.id) &&
+                  renameData.id !== value.id
                     ? { background: "#212121" }
-                    : { background: "none" }
+                    : { background: "transparent" }
                 }
                 className="historyItems"
                 onMouseEnter={() => onEnterFunc(value.id)}
@@ -213,7 +214,7 @@ const SideNavbar = ({ navWidth }) => {
                   </div>
                 ) : null}
 
-                {/* Popup */}
+                {/* Popup section */}
                 {popupData.id === value.id && (
                   <div className="historyPopup">
                     <div className="historyPopupOptions">

@@ -46,7 +46,7 @@
   width: 36px;
   height: 36px;
   margin-right: 1rem;
-  margin-top: 0.2rem;
+  margin-top: 0.3rem;
   cursor: pointer;
 }
 
@@ -60,16 +60,104 @@
 }
 
 .promptContentDiv {
-  color: #ececec;
   background-color: #323232d9;
   border-radius: 1.5rem;
-  font-size: 16px;
-  white-space: pre-wrap;
   max-width: 537px;
   height: fit-content;
   padding: 15px 20px;
 }
 
+.promptContentDiv > p {
+  color: #ececec;
+  font-size: 16px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.promptEditBox {
+  background-color: #424242;
+  width: 100%;
+  height: fit-content;
+  padding: 12px;
+  border-radius: 1.5rem;
+}
+
+.promptEditBoxContentDiv {
+  min-height: fit-content;
+  max-height: fit-content;
+  margin: 0.5rem;
+}
+
+.promptEditBoxContentDiv > textarea {
+  color: #ececec;
+  background-color: #424242;
+  text-wrap: wrap;
+  width: 100%;
+  min-height: 45px !important;
+  max-height: 185px !important;
+  resize: none;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  appearance: none;
+  overflow-y: auto;
+  border: none;
+  outline: none;
+  letter-spacing: 0.016rem;
+  line-height: 1.5rem;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.promptEditBoxContentDiv > textarea::placeholder {
+  color: #b4b4b4;
+}
+
+.promptEditBoxContentDiv > textarea::-webkit-scrollbar {
+  width: 12px;
+}
+
+.promptEditBoxContentDiv > textarea::-webkit-scrollbar-track {
+  background: #424242;
+}
+
+.promptEditBoxContentDiv > textarea::-webkit-scrollbar-thumb {
+  background: #676767;
+}
+
+.promptEditBoxActionDiv {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 38px;
+}
+
+.promptEditBoxActionDiv > button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 2rem;
+  font-weight: 0.8rem;
+  font-weight: 500;
+  width: 71px;
+  height: 100%;
+  padding: 8px 14px;
+  outline: none;
+}
+
+#cancelBtn {
+  background-color: #212121;
+  color: #ececec;
+  margin-right: 1rem;
+}
+
+#updateBtn {
+  background-color: #f9f9f9;
+  color: #0d0d0d;
+}
+
+/* Response Section */
 .aiResponseBox {
   display: flex;
   justify-content: space-between;
@@ -99,38 +187,62 @@
   height: fit-content;
 }
 
+/* Prompt Input section */
 .promptInputBox {
   background-color: #2f2f2f;
   border-radius: 1.5rem;
   position: fixed;
   bottom: 32px;
-  right: 232px;
   width: 744px;
   height: fit-content;
   padding: 4px 10px;
+  transition: all 0.4s;
 }
 
 .promptInputContentDiv {
+  color: #ececec;
+  background-color: #2f2f2f;
+  font-size: 1rem;
+  text-wrap: wrap;
   width: 100%;
-  min-height: 44px;
-  max-height: 121px;
+  height: fit-content;
   padding: 0px 8px;
 }
 
-.promptInputContentDiv > input {
+.promptInputContentDiv > textarea {
   color: #ececec;
   background-color: #2f2f2f;
-  border: none;
-  font-size: 1rem;
+  text-wrap: wrap;
   width: 100%;
-  min-height: 44px;
-  max-height: 121px;
+  min-height: 40px;
+  max-height: 185px;
+  resize: none;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  appearance: none;
+  overflow-y: auto;
+  border: none;
   outline: none;
+  letter-spacing: 0.016rem;
+  font-size: 1rem;
+  padding-top: 15px;
+  font-weight: 400;
 }
 
-.promptInputContentDiv > input::placeholder {
+.promptInputContentDiv > textarea::placeholder {
   color: #b4b4b4;
-  font-size: 1rem;
+}
+
+.promptInputContentDiv > textarea::-webkit-scrollbar {
+  width: 12px;
+}
+
+.promptInputContentDiv > textarea::-webkit-scrollbar-track {
+  background: #2f2f2f;
+}
+
+.promptInputContentDiv > textarea::-webkit-scrollbar-thumb {
+  background: #3c3c3c;
 }
 
 .promptActionButtonsDiv {
@@ -138,7 +250,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 44px;
+  height: 45px;
 }
 
 .promptActionButtonsDiv button {
