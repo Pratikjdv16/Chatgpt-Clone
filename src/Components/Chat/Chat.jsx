@@ -1,22 +1,33 @@
 import React, { useRef, useState } from "react";
 import "./CSS/Chat.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addPromptData,
+  updatePromptData,
+  displayEditPromptSection,
+} from "../Store/ChatSlice";
 
 const Chat = ({ state }) => {
   const textAreaRef = useRef(null);
+  const dispatch = useDispatch();
 
-  const [promptText, setPromptText] = useState({
-    text: "",
-  });
-  const [storePrompt, setStorePrompt] = useState("");
-  const [editPromptText, setEditPromptText] = useState({
-    text: "",
+  //= States ==================================================================
+
+  const [promptText, setPromptText] = useState("");
+
+  const [editPromptText, setEditPromptText] = useState("");
+
+  //= Selectors ===============================================================
+
+  const displayChatSection = useSelector((state) => {
+    return state.ChatSlice.displayChatSection;
   });
 
-  const [displayChatBox, setDisplayChatBox] = useState({
-    chatBox: false,
-    promptBox: false,
-    editPromptBox: false,
+  const allPromptData = useSelector((state) => {
+    return state.ChatSlice.allPromptData;
   });
+
+  //= Event handlers ==========================================================
 
   const handleInput = () => {
     const textarea = textAreaRef.current;
@@ -24,67 +35,27 @@ const Chat = ({ state }) => {
     textarea.style.height = Math.min(textarea.scrollHeight, 185) + "px";
   };
 
-  const onChangePromptText = (event) => {
-    const value = event.target.value;
-    setPromptText({ text: value });
-  };
-
-  const onChangeEditPromptText = (event) => {
-    const value = event.target.value;
-    setEditPromptText({ text: value });
-  };
-
-  //= On Submit
-  const handlePromptBox = () => {
-    if (promptText.text !== "") {
-      setDisplayChatBox({ ...displayChatBox, chatBox: true, promptBox: true });
-      setStorePrompt(promptText.text);
-      setPromptText({ text: "" });
-      textAreaRef.current.style.height = "40px";
-    } else {
-      alert("First type some prompt, then you upload");
-    }
-  };
-
-  //= Show Edit box
-  const handlePromptEditBox = () => {
-    setEditPromptText({ text: storePrompt });
-    setDisplayChatBox({
-      ...displayChatBox,
-      promptBox: false,
-      editPromptBox: true,
-    });
-  };
-
-  //= On update
-  const handleUpdateBtn = () => {
-    setStorePrompt(editPromptText.text);
-    setDisplayChatBox({
-      ...displayChatBox,
-      promptBox: true,
-      editPromptBox: false,
-    });
-  };
-
-  //= On cancel
-  const handleCancelBtn = () => {
-    setEditPromptText({ text: "" });
-    setDisplayChatBox({
-      ...displayChatBox,
-      promptBox: true,
-      editPromptBox: false,
-    });
-  };
-
   return (
     <section id="chat" style={{ width: state.chatWidth }}>
-      {/* Chat section */}
-      {displayChatBox.chatBox === true && (
+      {/* Chat section ---------------------------------------------------------------- */}
+      {displayChatSection.chatSection === true && (
         <div className="chatBox">
+          {/* Prompt Section */}
           <div className="promptBox">
             {/* Edit Btn */}
-            {displayChatBox.promptBox === true && (
-              <div className="promptEditLogoDiv" onClick={handlePromptEditBox}>
+            {displayChatSection.promptSection === true && (
+              <div
+                className="promptEditLogoDiv"
+                onClick={() => {
+                  dispatch(
+                    displayEditPromptSection({
+                      promptSection: false,
+                      editPromptSection: true,
+                    })
+                  );
+                  setEditPromptText(allPromptData);
+                }}
+              >
                 <svg
                   width="24"
                   height="24"
@@ -103,29 +74,52 @@ const Chat = ({ state }) => {
               </div>
             )}
 
-            {/* Content */}
-            {displayChatBox.promptBox === true && (
+            {/* Prompt Section */}
+            {displayChatSection.promptSection === true && (
               <div className="promptContentDiv">
-                <p>{storePrompt}</p>
+                <p>{allPromptData}</p>
               </div>
             )}
 
-            {/* Edit Section */}
-            {displayChatBox.editPromptBox === true && (
+            {/* Edit Prompt Section */}
+            {displayChatSection.editPromptSection === true && (
               <div className="promptEditBox">
                 <div className="promptEditBoxContentDiv">
+                  {/* Text Area */}
                   <textarea
                     ref={textAreaRef}
-                    value={editPromptText.text}
+                    value={editPromptText}
                     onInput={handleInput}
-                    onChange={onChangeEditPromptText}
+                    onChange={(event) => setEditPromptText(event.target.value)}
                   ></textarea>
                 </div>
+
+                {/* Button Section */}
                 <div className="promptEditBoxActionDiv">
-                  <button id="cancelBtn" onClick={handleCancelBtn}>
+                  {/* Cancel Button */}
+                  <button
+                    id="cancelBtn"
+                    onClick={() => {
+                      dispatch(
+                        displayEditPromptSection({
+                          promptSection: true,
+                          editPromptSection: false,
+                        })
+                      );
+                      setEditPromptText("");
+                    }}
+                  >
                     Cancel
                   </button>
-                  <button id="updateBtn" onClick={handleUpdateBtn}>
+
+                  {/* Update button */}
+                  <button
+                    id="updateBtn"
+                    onClick={() => {
+                      dispatch(updatePromptData(editPromptText));
+                      setEditPromptText("");
+                    }}
+                  >
                     Save
                   </button>
                 </div>
@@ -172,19 +166,23 @@ const Chat = ({ state }) => {
         </div>
       )}
 
-      {/* Message Chatgpt*/}
+      {/* Message Chatgpt -------------------------------------------------------------- */}
       <div className="promptInputBox" style={{ right: state.promptRight }}>
+        {/* Prompt Input Section */}
         <div className="promptInputContentDiv">
+          {/* Text Area */}
           <textarea
             ref={textAreaRef}
-            value={promptText.text}
+            value={promptText}
             onInput={handleInput}
-            onChange={onChangePromptText}
+            onChange={(event) => setPromptText(event.target.value)}
             placeholder="Message ChatGPT 16"
           ></textarea>
         </div>
 
+        {/* Button Section */}
         <div className="promptActionButtonsDiv">
+          {/* Attach File Button */}
           <button id="attachFilesButton">
             <svg
               width="24"
@@ -202,7 +200,17 @@ const Chat = ({ state }) => {
             </svg>
           </button>
 
-          <button id="submitPromptButton" onClick={handlePromptBox}>
+          {/* Prompt Submit Button */}
+          <button
+            id="submitPromptButton"
+            onClick={() => {
+              if (promptText !== "") {
+                dispatch(addPromptData(promptText));
+                textAreaRef.current.style.height = "40px";
+                setPromptText("");
+              }
+            }}
+          >
             <svg
               width="32"
               height="32"
@@ -222,7 +230,7 @@ const Chat = ({ state }) => {
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Footer ----------------------------------------------------------------------- */}
       <div className="footer" style={{ width: state.mainWidth }}>
         <span>ChatGPT 16 can make mistakes. Check important info.</span>
       </div>
