@@ -6,12 +6,17 @@ import {
   updatePromptData,
   displayEditPromptSection,
 } from "../Store/ChatSlice";
+import sendMsgToOpenAI from "../OpenAI/OpenAI";
+import { useParams } from "react-router-dom";
 
 const Chat = ({ state }) => {
   const textAreaRef = useRef(null);
   const dispatch = useDispatch();
+  const param = useParams();
 
   //= States ==================================================================
+
+  const [count, setCount] = useState(1);
 
   const [promptText, setPromptText] = useState("");
 
@@ -19,13 +24,11 @@ const Chat = ({ state }) => {
 
   //= Selectors ===============================================================
 
-  const displayChatSection = useSelector((state) => {
-    return state.ChatSlice.displayChatSection;
-  });
+  const displayChatSection = useSelector(
+    (state) => state.ChatSlice.displayChatSection
+  );
 
-  const allPromptData = useSelector((state) => {
-    return state.ChatSlice.allPromptData;
-  });
+  const allPromptData = useSelector((state) => state.ChatSlice.allPromptData);
 
   //= Event handlers ==========================================================
 
@@ -33,6 +36,32 @@ const Chat = ({ state }) => {
     const textarea = textAreaRef.current;
     textarea.style.height = "auto";
     textarea.style.height = Math.min(textarea.scrollHeight, 185) + "px";
+  };
+
+  const onSubmitPrompt = async () => {
+    if (promptText !== "") {
+      setCount(count + 1);
+      const response = await sendMsgToOpenAI(promptText);
+      console.log(count);
+
+      const modifyData = {
+        id: param.id,
+        heading: "New Conversation",
+        data: [
+          {
+            dataId: count,
+            prompt: promptText,
+            response: response,
+          },
+        ],
+      };
+
+      dispatch(addPromptData(modifyData));
+      textAreaRef.current.style.height = "40px";
+      setPromptText("");
+    } else {
+      alert("Prompt is required");
+    }
   };
 
   return (
@@ -77,7 +106,7 @@ const Chat = ({ state }) => {
             {/* Prompt Section */}
             {displayChatSection.promptSection === true && (
               <div className="promptContentDiv">
-                <p>{allPromptData}</p>
+                <p>Hello</p>
               </div>
             )}
 
@@ -201,16 +230,7 @@ const Chat = ({ state }) => {
           </button>
 
           {/* Prompt Submit Button */}
-          <button
-            id="submitPromptButton"
-            onClick={() => {
-              if (promptText !== "") {
-                dispatch(addPromptData(promptText));
-                textAreaRef.current.style.height = "40px";
-                setPromptText("");
-              }
-            }}
-          >
+          <button id="submitPromptButton" onClick={onSubmitPrompt}>
             <svg
               width="32"
               height="32"

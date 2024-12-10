@@ -64,7 +64,7 @@
   border-radius: 1.5rem;
   max-width: 537px;
   height: fit-content;
-  padding: 15px 20px;
+  padding: 10px 20px;
 }
 
 .promptContentDiv > p {
@@ -258,6 +258,7 @@
   background-color: transparent;
   width: 32px;
   height: 32px;
+  cursor: pointer;
 }
 
 #attachFilesButton {

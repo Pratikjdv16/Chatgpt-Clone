@@ -4,7 +4,7 @@ const ChatSlice = createSlice({
     name: "ChatSlice",
 
     initialState: {
-        allPromptData: "",
+        allPromptData: [],
         displayChatSection: {
             chatSection: false,
             promptSection: false,
@@ -15,7 +15,7 @@ const ChatSlice = createSlice({
     reducers: {
         //= Add prompt data 
         addPromptData: (state, action) => {
-            state.allPromptData = action.payload;
+            state.allPromptData = [...state.allPromptData, action.payload];
             state.displayChatSection = { ...state.displayChatSection, chatSection: true, promptSection: true };
         },
 
