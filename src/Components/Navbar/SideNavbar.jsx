@@ -1,41 +1,43 @@
 import React, { useRef, useState } from "react";
 import "./CSS/SideNavbar.css";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { renamePromptHeading } from "../Store/ChatSlice";
 
 const SideNavbar = ({ navWidth }) => {
-  //= History Data -----------------------------------------------
-
-  const data = [
-    {
-      id: 1,
-      name: "vs Code installation",
-    },
-    {
-      id: 2,
-      name: "React hooks",
-    },
-    {
-      id: 3,
-      name: "Javascript advance concepts",
-    },
-  ];
-
+  const dispatch = useDispatch();
   const inputRef = useRef(null);
-  const [hoverData, setHoverData] = useState({ id: null });
+
+  //= States =============================================================
+
   const [popupData, setPopupData] = useState({ id: null });
   const [renameData, setRenameData] = useState({ id: null });
-  const [historyData, setHistoryData] = useState(data);
+  const [displayThreeDots, setDisplayThreeDots] = useState("none");
 
-  //= on mouse enter/leave -------------------------------------
+  //= History Data =======================================================
 
-  const onEnterFunc = (id) => {
-    setHoverData({ id: id });
+  const allPromptData = useSelector((state) => state.ChatSlice.allPromptData);
+  // console.log("historyData", allPromptData);
+
+  //= On mouse enter / leave
+
+  const onMouseEnter = () => {
+    if (renameData.id === null && popupData.id === null) {
+      setDisplayThreeDots("flex");
+    } else if (popupData.id !== null && renameData.id === null) {
+      setDisplayThreeDots("flex");
+    }
   };
-  const onLeaveFunc = () => {
-    setHoverData({ id: null });
+
+  const onMouseLeave = () => {
+    if (renameData.id === null && popupData.id === null) {
+      setDisplayThreeDots("none");
+    } else if (popupData.id === null && renameData.id !== null) {
+      setDisplayThreeDots("none");
+    }
   };
 
-  //= show popup -------------------------------------------------
+  //= Show popup =========================================================
 
   const showPopup = (id) => {
     if (popupData.id === null) {
@@ -48,37 +50,39 @@ const SideNavbar = ({ navWidth }) => {
     }
   };
 
-  //= rename history item ----------------------------------------
+  //= onClick rename historyItem =========================================
 
   const renameHistoryItem = (id) => {
     setRenameData({ id: id });
     setPopupData({ id: null });
+    setDisplayThreeDots("none");
     return inputRef.current.focus();
   };
 
-  //= on blur input ----------------------------------------------
-
-  const onBlurInput = (id) => {
-    if (renameData.id === id) {
-      setRenameData({ id: null });
-    }
-  };
-
-  //= on rename changed ------------------------------------------
+  //= onEnter rename changed =============================================
 
   const onRenameChanged = (event, id) => {
     if (event.key === "Enter") {
-      const changedName = historyData.map((value, index) => {
-        if (index === id - 1) {
+      const changedName = allPromptData.map((value, index) => {
+        if (id === index + 1) {
           return { ...value, name: event.target.value };
         } else {
           return value;
         }
       });
-      setHistoryData(changedName);
+
+      dispatch(renamePromptHeading(changedName));
       alert("Name changed successfully!");
       setRenameData({ id: null });
     }
+  };
+
+  //= onBlur input ----------------------------------------------
+
+  const onBlurInput = () => {
+    // if (renameData.id === id) {
+    setRenameData({ id: null });
+    // }
   };
 
   return (
@@ -149,7 +153,7 @@ const SideNavbar = ({ navWidth }) => {
           </div>
         </div>
 
-        {/* History list */}
+        {/* History */}
         <div id="historyDiv">
           <span
             className="historySection"
@@ -158,26 +162,22 @@ const SideNavbar = ({ navWidth }) => {
             History
           </span>
 
-          {/* History */}
-          {historyData.map((value, index) => {
+          {/* History list */}
+          {allPromptData.map((value, index) => {
             return (
               <NavLink
                 key={index}
                 to={`/chatgpt16/${value.id}`}
-                style={
-                  (hoverData.id === value.id || popupData.id === value.id) &&
-                  renameData.id !== value.id
-                    ? { background: "#212121" }
-                    : { background: "transparent" }
+                className={({ isActive }) =>
+                  isActive ? "active-link historyItems" : "historyItems"
                 }
-                className="historyItems"
-                onMouseEnter={() => onEnterFunc(value.id)}
-                onMouseLeave={onLeaveFunc}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
               >
                 {/* Input box */}
                 <input
                   type="text"
-                  defaultValue={value.name}
+                  defaultValue={value.heading}
                   ref={inputRef}
                   style={
                     renameData.id === value.id
@@ -190,29 +190,27 @@ const SideNavbar = ({ navWidth }) => {
                 />
 
                 {/* Three Dots */}
-                {(hoverData.id === value.id || popupData.id === value.id) &&
-                renameData.id !== value.id ? (
-                  <div
-                    className="threeDotsDiv"
-                    onClick={() => showPopup(value.id)}
+                <div
+                  className="threeDotsDiv"
+                  style={{ display: displayThreeDots }}
+                  onClick={() => showPopup(value.id)}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon-md"
                   >
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="icon-md"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M3 12C3 10.8954 3.89543 10 5 10C6.10457 10 7 10.8954 7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12ZM10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12ZM17 12C17 10.8954 17.8954 10 19 10C20.1046 10 21 10.8954 21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12Z"
-                        fill="#b4b4b4"
-                      ></path>
-                    </svg>
-                  </div>
-                ) : null}
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M3 12C3 10.8954 3.89543 10 5 10C6.10457 10 7 10.8954 7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12ZM10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12ZM17 12C17 10.8954 17.8954 10 19 10C20.1046 10 21 10.8954 21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12Z"
+                      fill="#b4b4b4"
+                    ></path>
+                  </svg>
+                </div>
 
                 {/* Popup section */}
                 {popupData.id === value.id && (

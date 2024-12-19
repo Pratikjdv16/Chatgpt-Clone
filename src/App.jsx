@@ -37,7 +37,7 @@ const App = () => {
       <Navbar state={state} func={onOff} />
 
       <Routes>
-        <Route path="/" element={<Navigate to={"/chatgpt16"} />} />
+        <Route path="/" element={<Navigate to={"/chatgpt16/0"} replace />} />
         <Route path="/chatgpt16/:id" element={<Chat state={state} />} />
       </Routes>
     </>

@@ -5,34 +5,41 @@ const ChatSlice = createSlice({
 
     initialState: {
         allPromptData: [],
-        displayChatSection: {
-            chatSection: false,
-            promptSection: false,
-            editPromptSection: false,
-        }
+        promptData: {
+            heading: "",
+            data: []
+        },
+        displayEditPromptSection: false,
     },
 
     reducers: {
         //= Add prompt data 
         addPromptData: (state, action) => {
-            state.allPromptData = [...state.allPromptData, action.payload];
-            state.displayChatSection = { ...state.displayChatSection, chatSection: true, promptSection: true };
+            let { id, heading, data } = action.payload;
+            state.promptData.heading = heading;
+            state.promptData.data = [...state.promptData.data, data];
+            state.allPromptData[id] = state.promptData;
         },
 
         //= Update prompt data
         updatePromptData: (state, action) => {
-            state.allPromptData = action.payload;
-            state.displayChatSection = { ...state.displayChatSection, promptSection: true, editPromptSection: false };
+            let { id, dataId, updatePrompt } = action.payload;
+            // let prop = state.allPromptData[id].data[dataId].prompt
+            // state.allPromptData = [...state.allPromptData, { prompt: updatePrompt }];
         },
 
         //= Display edit prompt section
-        displayEditPromptSection: (state, action) => {
-            let { promptSection, editPromptSection } = action.payload
-            state.displayChatSection = { ...state.displayChatSection, promptSection: promptSection, editPromptSection: editPromptSection };
+        setDisplayEditPromptSection: (state, action) => {
+            state.displayEditPromptSection = action.payload;
+        },
+
+        //= Rename prompt heading
+        renamePromptHeading: (state, action) => {
+            state.allPromptData = action.payload
         }
     }
 });
 
 export default ChatSlice.reducer;
 
-export const { addPromptData, updatePromptData, displayEditPromptSection } = ChatSlice.actions;
+export const { autoAddPromptData, addPromptData, updatePromptData, setDisplayEditPromptSection, renamePromptHeading } = ChatSlice.actions;
