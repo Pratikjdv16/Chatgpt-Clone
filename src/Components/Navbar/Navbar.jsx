@@ -6,9 +6,9 @@ import myPic from "../Icons/enhanced-image (1).png";
 const Navbar = (props) => {
   const { state, func } = props;
 
-  const handleNewChat = () => {
+  // const handleNewChat = () => {
 
-  }
+  // }
 
   return (
     <>
@@ -35,7 +35,11 @@ const Navbar = (props) => {
                 </svg>
               </div>
 
-              <div className="letNavItems" style={{ marginRight: "0.7rem" }} onClick={handleNewChat}>
+              <div
+                className="letNavItems"
+                style={{ marginRight: "0.7rem" }}
+                onClick={handleNewChat}
+              >
                 <svg
                   width="24"
                   height="24"
