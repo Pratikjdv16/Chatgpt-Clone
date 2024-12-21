@@ -2,19 +2,32 @@ import React, { useRef, useState } from "react";
 import "./CSS/Chat.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addPromptData,
-  updatePromptData,
+  addHistoryData,
+  updateHistoryData,
   setDisplayEditPromptSection,
+  addFirstHistoryData,
+  setChatDataStatus,
 } from "../Store/ChatSlice";
 import sendMsgToOpenAI from "../OpenAI/OpenAI";
 import { useParams } from "react-router-dom";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import ReactMarkdown from "react-markdown";
 
 const Chat = ({ state }) => {
   const textAreaRef = useRef(null);
   const dispatch = useDispatch();
   const param = useParams();
+
+  //= Selectors ===============================================================
+
+  const displayEditPromptSection = useSelector(
+    (state) => state.ChatSlice.displayEditPromptSection
+  );
+
+  const chatDataStatus = useSelector((state) => state.ChatSlice.chatDataStatus);
+
+  const historyData = useSelector((state) => state.ChatSlice.historyData);
 
   //= States ==================================================================
 
@@ -24,22 +37,7 @@ const Chat = ({ state }) => {
 
   const [editPromptText, setEditPromptText] = useState("");
 
-  //= Selectors ===============================================================
-
-  const displayEditPromptSection = useSelector(
-    (state) => state.ChatSlice.displayEditPromptSection
-  );
-
-  const promptData = useSelector((state) => state.ChatSlice.promptData);
-
   //= Event handlers ==========================================================
-
-  // const handleCopyCode = (index) => {
-  //   let getCopyData = sampleCode[index].fileContent;
-  //   navigator.clipboard.writeText(getCopyData).then(() => {
-  //     alert("Copied");
-  //   });
-  // }; // Handle copy code
 
   const handleInput = () => {
     const textarea = textAreaRef.current;
@@ -51,7 +49,6 @@ const Chat = ({ state }) => {
     if (promptText !== "") {
       setCount(count + 1);
       const response = await sendMsgToOpenAI(promptText);
-      console.log(response);
 
       const modifyData = {
         dataId: count,
@@ -59,13 +56,26 @@ const Chat = ({ state }) => {
         response: response, // String / Array
       };
 
-      dispatch(
-        addPromptData({
-          id: param.id,
-          heading: `History ${param.id}`,
-          data: modifyData,
-        })
-      );
+      let chatDataExist = historyData.find((value) => {
+        return value.historyId === param.id;
+      });
+
+      if (chatDataExist) {
+        dispatch(
+          addHistoryData({
+            historyId: param.id,
+            data: modifyData,
+          })
+        );
+      } else {
+        dispatch(
+          addFirstHistoryData({
+            historyId: param.id,
+            data: modifyData,
+          })
+        );
+        dispatch(setChatDataStatus(true));
+      }
 
       textAreaRef.current.style.height = "40px";
       setPromptText("");
@@ -77,15 +87,14 @@ const Chat = ({ state }) => {
   return (
     <section id="chat" style={{ width: state.chatWidth }}>
       {/* Chat section ---------------------------------------------------------------- */}
-
-      {promptData.data.length !== 0 &&
-        promptData.data.map((value, index) => {
+      {chatDataStatus === true &&
+        historyData[param.id].data.map((value, index) => {
           return (
             <div
               key={index}
               className="chatBox"
               style={
-                index === promptData.data.length - 1
+                index === historyData[param.id].data.length - 1
                   ? { paddingBottom: "12rem" }
                   : { paddingBottom: "0rem" }
               }
@@ -159,7 +168,7 @@ const Chat = ({ state }) => {
                         id="updateBtn"
                         onClick={() => {
                           dispatch(
-                            updatePromptData({
+                            updateHistoryData({
                               id: param.id - 1,
                               dataId: index,
                               updatePrompt: editPromptText,
@@ -204,17 +213,40 @@ const Chat = ({ state }) => {
 
                     return v === 1 ? (
                       <div className="code-description" key={index}>
-                        <p>{item}</p>
+                        <ReactMarkdown>{item}</ReactMarkdown>
                       </div>
                     ) : (
                       <div className="code-content" key={index}>
                         <div className="cond-content-headingBox">
-                          <span style={{ fontSize: "0.8rem" }}>javascript</span>
+                          <span style={{ fontSize: "0.75rem" }}>
+                            javascript
+                          </span>
                           <span
                             className="copyCode"
-                            // onClick={() => handleCopyCode(index)}
+                            onClick={() => {
+                              let getCopyData = item;
+                              navigator.clipboard
+                                .writeText(getCopyData)
+                                .then(() => {
+                                  alert("Copied");
+                                });
+                            }}
                           >
-                            <i className="fa-regular fa-clone"></i>
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="icon-sm"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M7 5C7 3.34315 8.34315 2 10 2H19C20.6569 2 22 3.34315 22 5V14C22 15.6569 20.6569 17 19 17H17V19C17 20.6569 15.6569 22 14 22H5C3.34315 22 2 20.6569 2 19V10C2 8.34315 3.34315 7 5 7H7V5ZM9 7H14C15.6569 7 17 8.34315 17 10V15H19C19.5523 15 20 14.5523 20 14V5C20 4.44772 19.5523 4 19 4H10C9.44772 4 9 4.44772 9 5V7ZM5 9C4.44772 9 4 9.44772 4 10V19C4 19.5523 4.44772 20 5 20H14C14.5523 20 15 19.5523 15 19V10C15 9.44772 14.5523 9 14 9H5Z"
+                                fill="#b4b4b4"
+                              ></path>
+                            </svg>
                             Copy code
                           </span>
                         </div>
@@ -222,14 +254,14 @@ const Chat = ({ state }) => {
                         <div className="cond-content-codeBox">
                           <SyntaxHighlighter
                             language="javascript"
-                            style={materialDark}
+                            style={solarizedlight}
                             customStyle={{
                               padding: "20px",
                               borderRadius: "10px",
                               fontSize: "1rem",
                             }}
                           >
-                            {item}
+                            {`${item}`}
                           </SyntaxHighlighter>
                         </div>
                       </div>
@@ -245,7 +277,6 @@ const Chat = ({ state }) => {
       <div className="promptInputBox" style={{ right: state.promptRight }}>
         {/* Prompt Input Section */}
         <div className="promptInputContentDiv">
-          {/* Text Area */}
           <textarea
             ref={textAreaRef}
             value={promptText}
@@ -257,7 +288,6 @@ const Chat = ({ state }) => {
 
         {/* Button Section */}
         <div className="promptActionButtonsDiv">
-          {/* Attach File Button */}
           <button id="attachFilesButton">
             <svg
               width="24"
@@ -275,7 +305,6 @@ const Chat = ({ state }) => {
             </svg>
           </button>
 
-          {/* Prompt Submit Button */}
           <button id="submitPromptButton" onClick={onSubmitPrompt}>
             <svg
               width="32"

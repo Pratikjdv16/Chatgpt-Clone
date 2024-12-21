@@ -19,9 +19,40 @@ body::-webkit-scrollbar {
 
 p {
   line-height: 160%;
+  line-height: 1.6;
   letter-spacing: 0.016rem;
   font-size: 0.95426rem;
   font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 16px 0 8px;
+  font-weight: bold;
+}
+
+ul {
+  margin: 8px 0;
+}
+
+li {
+  line-height: 160%;
+  letter-spacing: 0.016rem;
+  font-size: 0.95426rem;
+  font-weight: 400;
+  margin: 4px 0;
+}
+
+code {
+  background-color: #424242;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-weight: 500;
+  padding: 0.15rem 0.3rem;
 }
 
 span {

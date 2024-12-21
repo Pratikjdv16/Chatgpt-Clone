@@ -25,17 +25,6 @@ const sendMsgToOpenAI = async (message, options = {}) => {
             ...options
         });
         // const cleanData = response.data.choices[0].message.content.split("```");
-
-        // const getD = cleanData.map((value) => {
-        //     const codePattern = /\b(import|export|function|const|let|var|class|return|for|while|if|else|try|catch|switch|case|new|extends|super|this|=>|async|await)\b\s*[A-Za-z0-9_]+\s*(=\s*|[(\[{])|\b[A-Za-z0-9_]+\s*\([^)]*\)\s*\{|\{|\}|\[|\]|\bconsole\.log\b|\bfetch\b|[A-Za-z0-9_]+\s*=\s*[A-Za-z0-9_]+|\d+/;
-        //     if (codePattern.test(value)) {
-        //         console.log("Code: ", value);
-        //     }
-        //     if (!codePattern.test(value)) {
-        //         console.log("Explanation: ", value)
-        //     }
-        // });
-
         // console.log(cleanData);
         return response.data.choices[0].message.content.split("```");
     } catch (error) {

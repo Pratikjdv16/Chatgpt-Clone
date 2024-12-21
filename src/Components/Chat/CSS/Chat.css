@@ -72,7 +72,6 @@
 
 .promptContentDiv > p {
   color: #ececec;
-  font-size: 16px;
   white-space: pre-wrap;
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -321,20 +320,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 12px;
   width: fit-content;
   height: 100%;
   cursor: pointer;
-  padding: 0.5rem;
 }
 
 .copyCode:hover {
   color: white;
 }
 
-.copyCode > i {
-  font-size: 0.9rem;
-  margin-right: 0.5rem;
+.copyCode > svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 0.2rem;
 }
 
 .cond-content-codeBox {
@@ -356,13 +355,14 @@ pre {
   padding: 0rem 1rem 2rem 1rem !important;
 }
 
-code {
+pre > code {
   background: black !important;
 }
 
-code > span {
+pre > code > span {
   background: black !important;
   text-wrap-mode: wrap;
+  font-size: 0.95426rem !important;
 }
 
 .code-description {
@@ -383,6 +383,7 @@ code > span {
 .code-description > p {
   width: 100%;
   height: fit-content;
+  margin: 8px 0;
 }
 
 .footer {

@@ -1,61 +1,42 @@
 import React, { useRef, useState } from "react";
 import "./CSS/SideNavbar.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { renamePromptHeading } from "../Store/ChatSlice";
+import { renameHistoryHeading, setChatDataStatus } from "../Store/ChatSlice";
 
 const SideNavbar = ({ navWidth }) => {
   const dispatch = useDispatch();
   const inputRef = useRef(null);
-
+  const location = useLocation();
   //= States =============================================================
 
-  const [popupData, setPopupData] = useState({ id: null });
-  const [renameData, setRenameData] = useState({ id: null });
-  const [displayThreeDots, setDisplayThreeDots] = useState("none");
+  const [popupId, setPopupId] = useState(null);
+  const [renameId, setRenameId] = useState(null);
 
   //= History Data =======================================================
 
-  const allPromptData = useSelector((state) => state.ChatSlice.allPromptData);
-  // console.log("historyData", allPromptData);
-
-  //= On mouse enter / leave
-
-  const onMouseEnter = () => {
-    if (renameData.id === null && popupData.id === null) {
-      setDisplayThreeDots("flex");
-    } else if (popupData.id !== null && renameData.id === null) {
-      setDisplayThreeDots("flex");
-    }
-  };
-
-  const onMouseLeave = () => {
-    if (renameData.id === null && popupData.id === null) {
-      setDisplayThreeDots("none");
-    } else if (popupData.id === null && renameData.id !== null) {
-      setDisplayThreeDots("none");
-    }
-  };
+  const historyData = useSelector((state) => state.ChatSlice.historyData);
 
   //= Show popup =========================================================
 
-  const showPopup = (id) => {
-    if (popupData.id === null) {
-      setPopupData({ id: id });
-    } else if (popupData.id !== null && popupData.id !== id) {
-      setPopupData({ id: null });
-      setPopupData({ id: id });
+  const showPopup = (event, id) => {
+    event.preventDefault(); // Prevent default anchor behavior
+    event.stopPropagation(); // Prevents NavLink from navigating
+    if (popupId === null) {
+      setPopupId(id);
+    } else if (popupId !== null && popupId !== id) {
+      setPopupId(null);
+      setPopupId(id);
     } else {
-      setPopupData({ id: null });
+      setPopupId(null);
     }
   };
 
   //= onClick rename historyItem =========================================
 
   const renameHistoryItem = (id) => {
-    setRenameData({ id: id });
-    setPopupData({ id: null });
-    setDisplayThreeDots("none");
+    setRenameId(id);
+    setPopupId(null);
     return inputRef.current.focus();
   };
 
@@ -63,26 +44,33 @@ const SideNavbar = ({ navWidth }) => {
 
   const onRenameChanged = (event, id) => {
     if (event.key === "Enter") {
-      const changedName = allPromptData.map((value, index) => {
-        if (id === index + 1) {
-          return { ...value, name: event.target.value };
+      const changedName = historyData.map((value, index) => {
+        if (index === id) {
+          return { ...value, heading: event.target.value };
         } else {
           return value;
         }
       });
 
-      dispatch(renamePromptHeading(changedName));
+      dispatch(renameHistoryHeading(changedName));
       alert("Name changed successfully!");
-      setRenameData({ id: null });
+      setRenameId(null);
     }
   };
 
-  //= onBlur input ----------------------------------------------
+  //= onBlur input =======================================================
 
   const onBlurInput = () => {
-    // if (renameData.id === id) {
-    setRenameData({ id: null });
-    // }
+    setRenameId(null);
+  };
+
+  const setChatSection = (index) => {
+    let pathName = location.pathname.split("/");
+    let param = { id: parseInt(pathName[pathName.length - 1]) };
+
+    if (index === param.id) {
+      dispatch(setChatDataStatus(true));
+    }
   };
 
   return (
@@ -163,16 +151,15 @@ const SideNavbar = ({ navWidth }) => {
           </span>
 
           {/* History list */}
-          {allPromptData.map((value, index) => {
+          {historyData.map((value, index) => {
             return (
               <NavLink
                 key={index}
-                to={`/chatgpt16/${value.id}`}
+                to={`/chatgpt16/${index}`}
                 className={({ isActive }) =>
                   isActive ? "active-link historyItems" : "historyItems"
                 }
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
+                onClick={() => setChatSection(index)}
               >
                 {/* Input box */}
                 <input
@@ -180,20 +167,19 @@ const SideNavbar = ({ navWidth }) => {
                   defaultValue={value.heading}
                   ref={inputRef}
                   style={
-                    renameData.id === value.id
+                    renameId === index
                       ? { cursor: "default", border: "2px solid #2563eb" }
                       : { cursor: "default", border: "none" }
                   }
-                  onBlur={() => onBlurInput(value.id)}
-                  onKeyDown={(event) => onRenameChanged(event, value.id)}
-                  readOnly={renameData.id === value.id ? false : true}
+                  onBlur={() => onBlurInput(index)}
+                  onKeyDown={(event) => onRenameChanged(event, index)}
+                  readOnly={renameId === index ? false : true}
                 />
 
                 {/* Three Dots */}
                 <div
                   className="threeDotsDiv"
-                  style={{ display: displayThreeDots }}
-                  onClick={() => showPopup(value.id)}
+                  onClick={(event) => showPopup(event, index)}
                 >
                   <svg
                     width="24"
@@ -213,7 +199,7 @@ const SideNavbar = ({ navWidth }) => {
                 </div>
 
                 {/* Popup section */}
-                {popupData.id === value.id && (
+                {popupId === index && (
                   <div className="historyPopup">
                     <div className="historyPopupOptions">
                       <svg
@@ -236,7 +222,7 @@ const SideNavbar = ({ navWidth }) => {
 
                     <div
                       className="historyPopupOptions"
-                      onClick={() => renameHistoryItem(value.id)}
+                      onClick={() => renameHistoryItem(index)}
                     >
                       <svg
                         width="24"
